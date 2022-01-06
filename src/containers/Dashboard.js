@@ -144,7 +144,8 @@ export default class {
       this.counter ++
     }
 
-    bills.forEach(bill => {
+    bills.forEach(bill => { //Superposition eventListener
+      $(`#open-bill${bill.id}`).off() //Source: https://api.jquery.com/off/ Remove EventListener
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
