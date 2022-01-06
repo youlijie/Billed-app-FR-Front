@@ -19,6 +19,8 @@ export default class NewBill {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
+    if (file.name.toLowerCase().includes(".jpeg" || ".jpg" || ".png")) {
+  
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
@@ -39,6 +41,9 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+    } else {
+      alert("Please select a valid image file")
+    }
   }
   handleSubmit = e => {
     e.preventDefault()
