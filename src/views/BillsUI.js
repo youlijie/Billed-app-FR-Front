@@ -20,6 +20,13 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
+
+  data.sort(function(a,b){
+    // Turn your strings into dates, and then subtract them
+    // to get a value that is either negative, positive, or zero.
+    return new Date(b.date) - new Date(a.date);
+  });
+  // source: https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
 }
 
