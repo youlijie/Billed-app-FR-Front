@@ -6,6 +6,7 @@ import Bills from "../containers/Bills.js"
 import userEvent from "@testing-library/user-event"
 import Router from "../app/Router"
 import store from "../__mocks__/store"
+import { localStorageMock } from "../__mocks__/localStorage.js"
 
 describe("Given I am connected as an employee", () => {
   // test ligne 44-46 BillsUI pour atteindre 100%
@@ -22,6 +23,78 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({ error: 'some error message' })
       document.body.innerHTML = html
       expect(screen.getAllByText('Erreur')).toBeTruthy()
+    })
+  })
+
+  describe("When I am on Bills Page", () => {
+    test("then i click on icon eye a popup window apear", () => { // test affichage du popup qui contient le justificatif
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({// log en tant qu'employé
+        type: 'Employee'
+      }))
+      const html = BillsUI({ data: [bills[0]] }) // mise en place de BillsUI dans une constante
+      document.body.innerHTML = html // affichage de BillsUI
+      const onNavigate = (pathname) => { // creation de la fonction de routage
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const firestore = null //config du firestore
+      const newBills = new Bills({ document, onNavigate, firestore, localStorage })// creation des bill
+      $.fn.modal = jest.fn();//comportement du mock
+      const eye = screen.getByTestId("icon-eye")// recuperation de l'iconne a cliqué
+      const handleClickIconEye = jest.fn(() => newBills.handleClickIconEye(eye))// eye element inside handleclick
+      eye.addEventListener('click', handleClickIconEye) // mise en place de l'evenment declencheur
+      userEvent.click(eye)//click sur l'élement en question
+      expect(handleClickIconEye).toHaveBeenCalled()//handleClick a t'il été bien appelé
+      expect(screen.getByText('Justificatif')).toBeTruthy()// le justificatif est il bien affiché
+    })
+  })
+
+  describe("When I am on Bills Page", () => { 
+    test("then i click on NewBill button i must be redirect to NewBill", () => {// test de redirection vers newBill
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({// log en tant qu'employé
+        type: 'Employee'
+      }))
+      const html = BillsUI({ data: [bills[0]] })// mise en place de BillsUI dans une constante
+      document.body.innerHTML = html // affichage de BillsUI
+      const onNavigate = (pathname) => {// creation de la fonction de routage
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const firestore = null //config du firestore
+      const newBills = new Bills({ document, onNavigate, firestore, localStorage })// creation des bill
+      // $.fn.modal = jest.fn();//comportement du mock
+      const btn = screen.getByTestId("btn-new-bill")// recupération du boutton
+      const handleClickNewBill = jest.fn(() => newBills.handleClickNewBill)// btn element inside handleclick
+      btn.addEventListener('click', handleClickNewBill)//mise en place de l'evenment click
+      userEvent.click(btn) // click sur le bouuton
+      expect(handleClickNewBill).toHaveBeenCalled() // la fonction est elle bien appelée ?
+      expect(screen.getByText('Envoyer une note de frais')).toBeTruthy() // les élements affichés sont il les bons
+    })
+  })
+
+  describe("When I am on Bills Page", () => { 
+    test("then i click on NewBill button i must be redirect to NewBill", () => {// test de redirection vers newBill
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({// log en tant qu'employé
+        type: 'Employee'
+      }))
+      const html = BillsUI({ data: [bills[0]] })// mise en place de BillsUI dans une constante
+      document.body.innerHTML = html // affichage de BillsUI
+      const onNavigate = (pathname) => {// creation de la fonction de routage
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const firestore = null //config du firestore
+      const newBills = new Bills({ document, onNavigate, firestore, localStorage })// creation des bill
+      // $.fn.modal = jest.fn();//comportement du mock
+      const btn = screen.getByTestId("btn-new-bill")// recupération du boutton
+      const handleClickNewBill = jest.fn(() => newBills.handleClickNewBill)// btn element inside handleclick
+      btn.addEventListener('click', handleClickNewBill)//mise en place de l'evenment click
+      userEvent.click(btn) // click sur le bouuton
+      expect(handleClickNewBill).toHaveBeenCalled() // la fonction est elle bien appelée ?
+      expect(screen.getByText('Envoyer une note de frais')).toBeTruthy() // les élements affichés sont il les bons
     })
   })
   
